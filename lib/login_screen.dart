@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'constants.dart';
+import 'constants.dart'; 
+import 'register_screen.dart'; 
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,13 +11,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Key to identify the form and run validation
   final _formKey = GlobalKey<FormState>();
-  
-  // Local state for password visibility
   bool _isPasswordVisible = false;
-
-  // Controllers to retrieve text values later
+  
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -28,13 +25,19 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleLogin() {
-    // Validate returns true if the form is valid, or false otherwise.
     if (_formKey.currentState!.validate()) {
-      // PROCEED TO AUTHENTICATION
-      print("Login Pressed");
+      print("Login Logic Triggered");
       print("Email: ${_emailController.text}");
-      print("Password: ${_passwordController.text}");
+      // Di sini nanti logika autentikasi ke backend/firebase
     }
+  }
+
+  // Fungsi khusus untuk navigasi
+  void _navigateToRegister() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RegisterScreen()),
+    );
   }
 
   @override
@@ -51,7 +54,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // --- HEADER ---
                   Text(
                     'The Komars',
                     textAlign: TextAlign.center,
@@ -63,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Taste Without Boundaries',
+                    'Taste With Pleasure',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       fontSize: 16,
@@ -71,73 +73,47 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 48),
-
-                  // --- EMAIL INPUT ---
+                  
+                  // Email Field
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       labelText: 'Email Address',
                       prefixIcon: Icon(Icons.email_outlined),
-                      border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary, width: 2),
-                      ),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      // Simple regex for email validation
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                        return 'Please enter a valid email';
-                      }
+                      if (value == null || value.isEmpty) return 'Please enter email';
+                      if (!value.contains('@')) return 'Invalid email';
                       return null;
                     },
                   ),
                   const SizedBox(height: 20),
 
-                  // --- PASSWORD INPUT ---
+                  // Password Field
                   TextFormField(
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
                     decoration: InputDecoration(
                       labelText: 'Password',
                       prefixIcon: const Icon(Icons.lock_outline),
-                      border: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.primary, width: 2),
-                      ),
                       suffixIcon: IconButton(
-                        icon: Icon(
-                          _isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
+                        icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                        onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
                       ),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
+                      if (value == null || value.isEmpty) return 'Please enter password';
                       return null;
                     },
                   ),
-
-                  // --- FORGOT PASSWORD ---
+                  
+                  // Forgot Password
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        print("Navigate to Forgot Password");
+                        // Logika lupa password (nanti)
                       },
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.secondary,
@@ -145,21 +121,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Text('Forgot Password?'),
                     ),
                   ),
-                  const SizedBox(height: 24),
 
-                  // --- LOGIN BUTTON ---
+                  const SizedBox(height: 24),
+                  
+                  // Login Button
                   SizedBox(
-                    width: double.infinity,
-                    height: 50, // Fixed height for better touch target
+                    height: 50,
                     child: ElevatedButton(
                       onPressed: _handleLogin,
-                      style: AppStyles.primaryButtonStyle, // Using constant style
+                      style: AppStyles.primaryButtonStyle,
                       child: const Text('Login'),
                     ),
                   ),
+
                   const SizedBox(height: 24),
 
-                  // --- REGISTER LINK ---
+                  // Register Link 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -168,9 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: GoogleFonts.poppins(color: Colors.grey[700]),
                       ),
                       TextButton(
-                        onPressed: () {
-                          print("Navigate to Register");
-                        },
+                        onPressed: _navigateToRegister, // Memanggil fungsi navigasi
                         child: Text(
                           'Register',
                           style: GoogleFonts.poppins(
