@@ -21,6 +21,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
   String? _selectedPerson;
   final List<String> _personOptions = ['1 Orang', '2 Orang', '3-4 Orang', '5+ Orang'];
 
+  // Fungsi Date Picker
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -43,6 +44,7 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
     }
   }
 
+  // Fungsi Time Picker
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -61,6 +63,61 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
         _timeController.text = picked.format(context);
       });
     }
+  }
+
+  // --- IMPLEMENTASI ALERT DIALOG (Sesuai Ketentuan Poin 11c) ---
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Konfirmasi Reservasi',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Pastikan data berikut sudah benar:', style: GoogleFonts.poppins(fontSize: 14)),
+                const SizedBox(height: 10),
+                Text('Nama: ${_nameController.text}', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                Text('Tanggal: ${_dateController.text}', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                Text('Jam: ${_timeController.text}', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                Text('Jumlah: $_selectedPerson', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Batal', style: GoogleFonts.poppins(color: Colors.grey)),
+              onPressed: () {
+                Navigator.of(context).pop(); // Tutup Dialog
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+              child: Text('Ya, Pesan', style: GoogleFonts.poppins(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop(); // Tutup Dialog
+                _processReservation(); // Lanjut ke proses simpan
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _processReservation() {
+    // Simulasi sukses
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Reservasi Berhasil Diajukan!'), 
+        backgroundColor: Colors.green
+      ),
+    );
+    // Kembali ke halaman Home
+    Navigator.pop(context);
   }
 
   @override
@@ -151,11 +208,8 @@ class _ReservationFormScreenState extends State<ReservationFormScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // Tampilkan snackbar atau navigasi sukses
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Reservasi Berhasil Diajukan!'), backgroundColor: Colors.green),
-                      );
-                      Navigator.pop(context);
+                      // Panggil Alert Dialog Konfirmasi
+                      _showConfirmationDialog();
                     }
                   },
                   style: AppStyles.primaryButtonStyle,

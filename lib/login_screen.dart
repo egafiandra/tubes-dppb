@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'constants.dart'; 
 import 'register_screen.dart'; 
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,12 +26,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleLogin() {
-    if (_formKey.currentState!.validate()) {
-      print("Login Logic Triggered");
-      print("Email: ${_emailController.text}");
-      // Di sini nanti logika autentikasi ke backend/firebase
-    }
+  if (_formKey.currentState!.validate()) {
+    // Navigasi ke HomeScreen setelah login valid
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
   }
+}
 
   // Fungsi khusus untuk navigasi
   void _navigateToRegister() {
